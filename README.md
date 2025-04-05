@@ -2,6 +2,8 @@
 
 A modern, responsive task management application built with React Native and Supabase.
 
+🌐 **[View Live Demo](https://learn2shares.github.io/CalDo/)**
+
 ## Features
 
 - ✅ Create, edit, delete, and mark tasks as completed
@@ -27,7 +29,7 @@ A modern, responsive task management application built with React Native and Sup
   - Supabase (Authentication, Database, Storage)
   - Supabase Edge Functions (for notifications)
 - Deployment:
-  - Vercel (Web)
+  - GitHub Pages (Web)
   - Expo (Mobile)
 
 ## Getting Started
@@ -36,7 +38,6 @@ A modern, responsive task management application built with React Native and Sup
 
 - Node.js (v16 or later)
 - npm or yarn
-- Expo CLI
 - Supabase account
 - (Optional) Twilio account for WhatsApp notifications
 
@@ -44,21 +45,19 @@ A modern, responsive task management application built with React Native and Sup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/caldo.git
-cd caldo
+git clone https://github.com/learn2shares/CalDo.git
+cd CalDo
 ```
 
 2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Create a `.env` file in the root directory:
 ```env
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 4. Set up Supabase:
@@ -66,20 +65,17 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    - Run the database migrations (SQL files provided in `/supabase/migrations`)
    - Set up authentication providers as needed
 
-### Running the App
+### Development
 
-Development:
 ```bash
+# Start development server
 npm run dev
-# or
-yarn dev
-```
 
-Web Build:
-```bash
-npm run build:web
-# or
-yarn build:web
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
 ## Database Schema

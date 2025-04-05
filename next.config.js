@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Configuration for GitHub Pages deployment
   output: 'export',  // Enable static exports
   basePath: '/CalDo', // Base path for GitHub Pages
   images: {
