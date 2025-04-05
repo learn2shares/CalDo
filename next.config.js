@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable React Strict Mode for better development experience
+  output: 'export',  // Enable static exports
+  basePath: '/CalDo', // Base path for GitHub Pages
+  images: {
+    unoptimized: true, // Required for static export
+  },
   reactStrictMode: true,
-  
-  // Enable SWC minification for faster builds
   swcMinify: true,
 }
 

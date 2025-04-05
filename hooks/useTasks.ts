@@ -1,6 +1,7 @@
+'use client'
+
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import type { Task } from '../lib/supabase';
+import { taskService, type Task } from '@/lib/supabase';
 
 /**
  * Custom hook for managing tasks
@@ -28,17 +29,12 @@ export function useTasks() {
    */
   const fetchTasks = async () => {
     try {
-      // Query the tasks table and order by creation date
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error; // If there's an error, throw it to the catch block
-      setTasks(data || []); // Update tasks state with the fetched data
+      const data = await taskService.getTasks();
+      setTasks(data);
+      setError(null);
     } catch (e) {
       // Handle any errors that occurred during the fetch
-      setError(e instanceof Error ? e.message : 'An error occurred');
+      setError(e instanceof Error ? e.message : 'Failed to fetch tasks');
     } finally {
       // Always set loading to false when the operation is complete
       setLoading(false);
@@ -50,21 +46,13 @@ export function useTasks() {
    * @param newTask - The task to be added (without id, created_at, updated_at, and user_id)
    * @returns The created task or null if there was an error
    */
-  const addTask = async (newTask: Omit<Task, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+  const addTask = async (newTask: Omit<Task, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     try {
-      // Insert the new task and get the user ID from the auth session
-      const { data, error } = await supabase
-        .from('tasks')
-        .insert([{ ...newTask, user_id: (await supabase.auth.getUser()).data.user?.id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      // Add the new task to the beginning of the tasks array
-      setTasks([data, ...tasks]);
-      return data;
+      const task = await taskService.createTask(newTask);
+      setTasks([task, ...tasks]);
+      return task;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'An error occurred');
+      setError(e instanceof Error ? e.message : 'Failed to add task');
       return null;
     }
   };
@@ -77,20 +65,11 @@ export function useTasks() {
    */
   const updateTask = async (id: string, updates: Partial<Task>) => {
     try {
-      // Update the task in the database
-      const { data, error } = await supabase
-        .from('tasks')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      // Update the task in the local state
-      setTasks(tasks.map(task => task.id === id ? { ...task, ...data } : task));
-      return data;
+      const updatedTask = await taskService.updateTask(id, updates);
+      setTasks(tasks.map(task => task.id === id ? updatedTask : task));
+      return updatedTask;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'An error occurred');
+      setError(e instanceof Error ? e.message : 'Failed to update task');
       return null;
     }
   };
@@ -102,18 +81,11 @@ export function useTasks() {
    */
   const deleteTask = async (id: string) => {
     try {
-      // Delete the task from the database
-      const { error } = await supabase
-        .from('tasks')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      // Remove the task from the local state
+      await taskService.deleteTask(id);
       setTasks(tasks.filter(task => task.id !== id));
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'An error occurred');
+      setError(e instanceof Error ? e.message : 'Failed to delete task');
       return false;
     }
   };
