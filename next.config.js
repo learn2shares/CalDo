@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
+  trailingSlash: true,
   reactStrictMode: true,
   swcMinify: true,
 }

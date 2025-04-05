@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,16 +23,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18'
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
         
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /CalDo
+          CI: false
+          
+      - name: List build output
+        run: ls -la out/
           
       - name: Configure Pages
         uses: actions/configure-pages@v4
