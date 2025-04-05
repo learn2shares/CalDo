@@ -1,1 +1,7 @@
-{}
+{
+  "/not-found": "app/not-found.js",
+  "/auth/page": "app/auth/page.js",
+  "/page": "app/page.js",
+  "/calendar/page": "app/calendar/page.js",
+  "/stats/page": "app/stats/page.js"
+}
