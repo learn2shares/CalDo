@@ -151,7 +151,7 @@ create policy "Users can delete their own reminders"
     )
   );
 
--- Create functions for updating timestamps
+-- Create function to handle updated_at
 create or replace function public.handle_updated_at()
 returns trigger as $$
 begin
@@ -160,7 +160,7 @@ begin
 end;
 $$ language plpgsql;
 
--- Create triggers for updating timestamps
+-- Create trigger for updating timestamps
 create trigger handle_tasks_updated_at
   before update on public.tasks
   for each row

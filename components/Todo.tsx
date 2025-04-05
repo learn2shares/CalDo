@@ -7,8 +7,20 @@ import ReminderModal from './ReminderModal';
 import type { Task } from '../lib/supabase';
 import { registerForPushNotificationsAsync } from '../lib/notifications';
 
+/**
+ * Todo Component
+ * Main component for task management that handles:
+ * - Displaying the list of tasks
+ * - Adding new tasks
+ * - Completing tasks
+ * - Deleting tasks
+ * - Setting reminders
+ */
 export default function Todo() {
+  // Get task management functions from our custom hook
   const { tasks, loading, error, addTask, toggleTaskComplete, deleteTask } = useTasks();
+
+  // State for managing new task input
   const [newTask, setNewTask] = useState<Partial<Task>>({
     title: '',
     description: '',
@@ -16,17 +28,25 @@ export default function Todo() {
     priority: 'medium',
     category: 'Personal',
   });
+
+  // States for UI management
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showReminderModal, setShowReminderModal] = useState(false);
 
+  // Register for push notifications when component mounts
   useEffect(() => {
     registerForPushNotificationsAsync();
   }, []);
 
+  /**
+   * Handles adding a new task
+   * Validates that title exists, then creates the task and resets the form
+   */
   const handleAddTask = async () => {
-    if (!newTask.title) return;
+    if (!newTask.title) return; // Don't add task if title is empty
     
+    // Add the task to the database
     await addTask({
       title: newTask.title,
       description: newTask.description || '',
@@ -36,6 +56,7 @@ export default function Todo() {
       completed: false,
     });
 
+    // Reset the form after adding task
     setNewTask({
       title: '',
       description: '',
@@ -45,11 +66,16 @@ export default function Todo() {
     });
   };
 
+  /**
+   * Opens the reminder modal for a specific task
+   * @param task - The task to set a reminder for
+   */
   const handleSetReminder = (task: Task) => {
     setSelectedTask(task);
     setShowReminderModal(true);
   };
 
+  // Show loading spinner while data is being fetched
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -58,6 +84,7 @@ export default function Todo() {
     );
   }
 
+  // Show error message if there's an error
   if (error) {
     return (
       <View className="flex-1 justify-center items-center p-4">
@@ -68,13 +95,17 @@ export default function Todo() {
 
   return (
     <View className="flex-1 bg-white dark:bg-gray-900">
+      {/* New Task Input Section */}
       <View className="p-4">
+        {/* Task Title Input */}
         <TextInput
           className="p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           placeholder="Task title"
           value={newTask.title}
           onChangeText={(text) => setNewTask({ ...newTask, title: text })}
         />
+
+        {/* Task Description Input */}
         <TextInput
           className="p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           placeholder="Description"
@@ -83,6 +114,7 @@ export default function Todo() {
           multiline
         />
         
+        {/* Due Date Picker */}
         <TouchableOpacity
           className="flex-row items-center p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700"
           onPress={() => setShowDatePicker(true)}
@@ -92,6 +124,7 @@ export default function Todo() {
           </Text>
         </TouchableOpacity>
 
+        {/* Date Picker Modal */}
         {showDatePicker && (
           <DateTimePicker
             value={new Date(newTask.due_date || Date.now())}
@@ -105,6 +138,7 @@ export default function Todo() {
           />
         )}
 
+        {/* Add Task Button */}
         <TouchableOpacity
           className="p-3 mb-4 bg-blue-500 rounded-lg"
           onPress={handleAddTask}
@@ -113,12 +147,14 @@ export default function Todo() {
         </TouchableOpacity>
       </View>
 
+      {/* Task List Section */}
       <ScrollView className="flex-1 px-4">
         {tasks.map(task => (
           <View
             key={task.id}
             className="flex-row items-center p-4 mb-2 bg-gray-50 rounded-lg dark:bg-gray-800"
           >
+            {/* Task Completion Toggle */}
             <TouchableOpacity
               onPress={() => toggleTaskComplete(task.id)}
               className="mr-3"
@@ -130,6 +166,7 @@ export default function Todo() {
               />
             </TouchableOpacity>
             
+            {/* Task Details */}
             <View className="flex-1">
               <Text className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'}`}>
                 {task.title}
@@ -144,6 +181,7 @@ export default function Todo() {
               </Text>
             </View>
 
+            {/* Reminder Button */}
             <TouchableOpacity
               onPress={() => handleSetReminder(task)}
               className="mr-2"
@@ -151,6 +189,7 @@ export default function Todo() {
               <Ionicons name="alarm-outline" size={20} color="#3B82F6" />
             </TouchableOpacity>
 
+            {/* Delete Button */}
             <TouchableOpacity
               onPress={() => deleteTask(task.id)}
               className="ml-2"
@@ -161,6 +200,7 @@ export default function Todo() {
         ))}
       </ScrollView>
 
+      {/* Reminder Modal */}
       {selectedTask && (
         <ReminderModal
           visible={showReminderModal}
