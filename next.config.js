@@ -2,7 +2,7 @@
 const nextConfig = {
   // Configuration for GitHub Pages deployment
   output: 'export',  // Enable static exports
-  basePath: '/CalDo', // Base path for GitHub Pages
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   images: {
     unoptimized: true, // Required for static export
   },
