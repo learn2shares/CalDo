@@ -5,28 +5,7 @@
  * service functions for interacting with the database.
  */
 
-import { createClient } from '@supabase/supabase-js'
-
-// Get environment variables for Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-// Validate required environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-/**
- * Initialize Supabase client with authentication configuration
- * Uses browser's localStorage for session persistence
- */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false
-  }
-})
+import { supabase } from './supabase/client'
 
 /**
  * Task Interface
