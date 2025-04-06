@@ -45,14 +45,16 @@ export default function TaskList() {
     e.preventDefault()
     if (!newTask.title) return
 
-    const category = newTask.category === 'Others' ? newTask.customCategory : newTask.category;
+    const category = newTask.category === 'Others' && newTask.customCategory 
+      ? newTask.customCategory 
+      : (newTask.category || 'Personal');
 
     await addTask({
       title: newTask.title,
-      description: newTask.description ?? '',
+      description: newTask.description || '',
       due_date: newTask.due_date || new Date().toISOString(),
       priority: newTask.priority || 'medium',
-      category: category || 'Personal',
+      category: category,
       completed: false,
     })
 
@@ -138,7 +140,7 @@ export default function TaskList() {
 
           <div className="space-y-3">
             <select
-              value={newTask.category}
+              value={newTask.category || 'Personal'}
               onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
             >
@@ -153,7 +155,7 @@ export default function TaskList() {
               <input
                 type="text"
                 placeholder="Enter custom category"
-                value={newTask.customCategory}
+                value={newTask.customCategory || ''}
                 onChange={(e) => setNewTask({ ...newTask, customCategory: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               />
