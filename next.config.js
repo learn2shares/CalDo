@@ -5,12 +5,18 @@ const nextConfig = {
   basePath: '/CalDo',
   images: {
     unoptimized: true, // Required for static export
+    domains: ['github.com'],
   },
   trailingSlash: true,
   reactStrictMode: true,
   swcMinify: true,
   distDir: 'out',
-  assetPrefix: '/CalDo/',
+  assetPrefix: '/CalDo',
+  experimental: {
+    images: {
+      unoptimized: true,
+    },
+  },
 }
 
 module.exports = nextConfig 
