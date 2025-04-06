@@ -1,9 +1,7 @@
-'use client'
-
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Navigation from '@/components/Navigation'
+import ClientLayout from './components/ClientLayout'
 
 // Load Inter font with Latin character subset
 const inter = Inter({ subsets: ['latin'] })
@@ -20,9 +18,8 @@ export const metadata: Metadata = {
  * This is the main layout wrapper that:
  * - Applies the Inter font
  * - Sets up the basic page structure
- * - Includes the navigation bar
- * - Provides consistent padding and max-width
- * - Supports dark mode
+ * - Provides dark mode support
+ * - Wraps content in ClientLayout for client-side interactivity
  */
 export default function RootLayout({
   children,
@@ -32,20 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              CalDo
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Simple and effective task management
-            </p>
-          </div>
-          <Navigation />
-          <main className="mt-8">
-            {children}
-          </main>
-        </div>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   )
