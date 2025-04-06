@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 // Define metadata for the application (used for SEO)
 export const metadata = {
-  title: 'CalDo - Task Management',
-  description: 'A modern task management application with calendar integration',
+  title: 'CalDo - Smart Task Management & Calendar App',
+  description: 'A modern task management application with calendar integration and category organization',
 }
 
 /**
