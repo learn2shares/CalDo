@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v4
       
@@ -32,12 +35,12 @@ jobs:
       - name: Build project
         run: |
           npm run build
-        env:
-          NEXT_PUBLIC_BASE_PATH: /CalDo
-          CI: false
           
-      - name: List build output
-        run: ls -la out/
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "out/" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
           
       - name: Configure Pages
         uses: actions/configure-pages@v4
@@ -45,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: out
 
   deploy:
     needs: build
