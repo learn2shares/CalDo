@@ -1,6 +1,6 @@
-# CalDo - Task Management App
+# CalDo - Task Management Application
 
-A modern, responsive task management application built with React Native and Supabase.
+A modern task management application built with Next.js, Supabase, and Tailwind CSS.
 
 🌐 **[View Live Demo](https://learn2shares.github.io/CalDo/)**
 
@@ -17,6 +17,10 @@ A modern, responsive task management application built with React Native and Sup
   - WhatsApp notifications (via Twilio)
 - 🎨 Clean, modern UI with dark mode support
 - 📱 Responsive design for both mobile and web
+
+## Deployment
+This application is deployed on Vercel. You can access it at:
+[CalDo App](https://cal-do.vercel.app)
 
 ## Tech Stack
 
