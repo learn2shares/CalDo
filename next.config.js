@@ -9,11 +9,6 @@ const nextConfig = {
   },
   trailingSlash: true,
   reactStrictMode: true,
-  swcMinify: true,
-  distDir: 'out',
-  experimental: {
-    appDir: true,
-  },
 }
 
 module.exports = nextConfig 

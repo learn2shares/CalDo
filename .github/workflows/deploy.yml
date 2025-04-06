@@ -33,9 +33,16 @@ jobs:
         run: npm install
         
       - name: Build project
+        run: npm run build
+          
+      - name: Prepare build output
         run: |
-          npm run build
-          touch out/.nojekyll
+          cp .nojekyll out/
+          cp -r out/* .
+          rm -rf out
+          mkdir out
+          mv * out/ 2>/dev/null || true
+          mv .nojekyll out/
           
       - name: Configure Pages
         uses: actions/configure-pages@v4
