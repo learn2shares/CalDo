@@ -3,7 +3,6 @@ const nextConfig = {
   // Configuration for GitHub Pages deployment
   output: 'export',  // Enable static exports
   basePath: '/CalDo',
-  assetPrefix: '/CalDo/',
   images: {
     unoptimized: true, // Required for static export
   },
@@ -11,6 +10,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   distDir: 'out',
+  experimental: {
+    appDir: true,
+  },
 }
 
 module.exports = nextConfig 
