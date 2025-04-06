@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { useRouter, usePathname } from 'next/navigation';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -25,6 +26,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check active sessions and sets the user
@@ -52,6 +55,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Handle route protection
+  useEffect(() => {
+    if (!loading) {
+      if (!user && pathname !== '/auth') {
+        router.push('/auth');
+      } else if (user && pathname === '/auth') {
+        router.push('/');
+      }
+    }
+  }, [user, loading, pathname, router]);
+
   const value = {
     user,
     loading,
@@ -71,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
+        router.push('/auth');
       } catch (error) {
         console.error('Error signing out:', error);
         throw error;

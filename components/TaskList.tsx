@@ -5,7 +5,7 @@
  * 
  * This is the main component for task management functionality.
  * It provides interfaces for:
- * - Adding new tasks with title, description, due date, and priority
+ * - Adding new tasks with title, description, due date, priority, and category
  * - Displaying existing tasks in a list format
  * - Toggling task completion status
  * - Deleting tasks
@@ -18,19 +18,23 @@ import { useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { type Task } from '@/lib/supabase'
 import { format } from 'date-fns'
-import { FiCheck, FiTrash2, FiCalendar, FiFlag } from 'react-icons/fi'
+import { FiCheck, FiTrash2, FiCalendar, FiFlag, FiTag } from 'react-icons/fi'
+
+// Predefined categories
+const CATEGORIES = ['Personal', 'Learning', 'Work', 'Shopping', 'Health', 'Others'] as const;
 
 export default function TaskList() {
   // Get task management functions and state from custom hook
   const { tasks, loading, error, addTask, updateTask, deleteTask, toggleTaskComplete } = useTasks()
 
   // State for managing new task form
-  const [newTask, setNewTask] = useState<Partial<Task>>({
+  const [newTask, setNewTask] = useState<Partial<Task> & { customCategory?: string }>({
     title: '',
     description: '',
     due_date: new Date().toISOString(),
     priority: 'medium',
     category: 'Personal',
+    customCategory: '',
   })
 
   /**
@@ -41,12 +45,14 @@ export default function TaskList() {
     e.preventDefault()
     if (!newTask.title) return
 
+    const category = newTask.category === 'Others' ? newTask.customCategory : newTask.category;
+
     await addTask({
       title: newTask.title,
-      description: newTask.description || '',
+      description: newTask.description ?? '',
       due_date: newTask.due_date || new Date().toISOString(),
       priority: newTask.priority || 'medium',
-      category: newTask.category || 'Personal',
+      category: category || 'Personal',
       completed: false,
     })
 
@@ -57,6 +63,7 @@ export default function TaskList() {
       due_date: new Date().toISOString(),
       priority: 'medium',
       category: 'Personal',
+      customCategory: '',
     })
   }
 
@@ -129,6 +136,30 @@ export default function TaskList() {
             </div>
           </div>
 
+          <div className="space-y-3">
+            <select
+              value={newTask.category}
+              onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+            >
+              {CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+
+            {newTask.category === 'Others' && (
+              <input
+                type="text"
+                placeholder="Enter custom category"
+                value={newTask.customCategory}
+                onChange={(e) => setNewTask({ ...newTask, customCategory: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+              />
+            )}
+          </div>
+
           <button
             type="submit"
             className="w-full px-6 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
@@ -189,6 +220,11 @@ export default function TaskList() {
                   }`}>
                     <FiFlag className="w-4 h-4" />
                     {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                  </span>
+
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">
+                    <FiTag className="w-4 h-4" />
+                    {task.category}
                   </span>
                 </div>
               </div>

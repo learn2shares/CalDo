@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FiList, FiCalendar, FiBarChart2, FiLogOut } from 'react-icons/fi'
-import { useAuth } from '@/lib/auth'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Navigation() {
   const pathname = usePathname()

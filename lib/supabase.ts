@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Supabase Configuration and Service Layer
  * 
