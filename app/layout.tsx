@@ -1,15 +1,15 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
-import ClientLayout from './components/ClientLayout'
+import { Inter } from 'next/font/google'
+import Navigation from '@/components/Navigation'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 // Load Inter font with Latin character subset
 const inter = Inter({ subsets: ['latin'] })
 
 // Define metadata for the application (used for SEO)
-export const metadata: Metadata = {
+export const metadata = {
   title: 'CalDo - Task Management',
-  description: 'A simple and effective task management application',
+  description: 'A modern task management application with calendar integration',
 }
 
 /**
@@ -27,11 +27,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.className}>
-      <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full`}>
+        <AuthProvider>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <Navigation />
+            <main className="container mx-auto max-w-4xl px-4 py-8">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   )

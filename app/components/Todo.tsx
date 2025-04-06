@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { FiCheck, FiCircle, FiTrash2 } from 'react-icons/fi';
 
 interface Task {
   id: string;
@@ -24,7 +22,6 @@ export default function Todo() {
     category: 'Personal',
     subtasks: [],
   });
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const addTask = () => {
     if (!newTask.title) return;
@@ -62,92 +59,79 @@ export default function Todo() {
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-gray-900">
-      <View className="p-4">
-        <TextInput
-          className="p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+    <div className="flex-1 min-h-screen bg-white dark:bg-gray-900">
+      <div className="p-4">
+        <input
+          type="text"
+          className="w-full p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           placeholder="Task title"
           value={newTask.title}
-          onChangeText={(text) => setNewTask({ ...newTask, title: text })}
+          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
         />
-        <TextInput
-          className="p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        <textarea
+          className="w-full p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           placeholder="Description"
           value={newTask.description}
-          onChangeText={(text) => setNewTask({ ...newTask, description: text })}
-          multiline
+          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
         />
         
-        <TouchableOpacity
-          className="flex-row items-center p-3 mb-2 border border-gray-300 rounded-lg dark:border-gray-700"
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text className="text-gray-700 dark:text-gray-300">
-            Due Date: {newTask.dueDate?.toLocaleDateString()}
-          </Text>
-        </TouchableOpacity>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={newTask.dueDate || new Date()}
-            mode="date"
-            onChange={(event, date) => {
-              setShowDatePicker(false);
-              if (date) {
-                setNewTask({ ...newTask, dueDate: date });
-              }
-            }}
+        <div className="flex items-center mb-2">
+          <input
+            type="date"
+            className="w-full p-3 border border-gray-300 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            value={newTask.dueDate?.toISOString().split('T')[0]}
+            onChange={(e) => setNewTask({ ...newTask, dueDate: new Date(e.target.value) })}
           />
-        )}
+        </div>
 
-        <TouchableOpacity
-          className="p-3 mb-4 bg-blue-500 rounded-lg"
-          onPress={addTask}
+        <button
+          className="w-full p-3 mb-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
+          onClick={addTask}
         >
-          <Text className="text-center text-white font-semibold">Add Task</Text>
-        </TouchableOpacity>
-      </View>
+          Add Task
+        </button>
+      </div>
 
-      <ScrollView className="flex-1 px-4">
+      <div className="flex-1 px-4 overflow-auto">
         {tasks.map(task => (
-          <View
+          <div
             key={task.id}
-            className="flex-row items-center p-4 mb-2 bg-gray-50 rounded-lg dark:bg-gray-800"
+            className="flex items-center p-4 mb-2 bg-gray-50 rounded-lg dark:bg-gray-800"
           >
-            <TouchableOpacity
-              onPress={() => toggleTaskComplete(task.id)}
-              className="mr-3"
+            <button
+              onClick={() => toggleTaskComplete(task.id)}
+              className="mr-3 focus:outline-none"
             >
-              <Ionicons
-                name={task.completed ? 'checkmark-circle' : 'ellipse-outline'}
-                size={24}
-                color={task.completed ? '#10B981' : '#6B7280'}
-              />
-            </TouchableOpacity>
+              {task.completed ? (
+                <FiCheck className="w-6 h-6 text-emerald-500" />
+              ) : (
+                <FiCircle className="w-6 h-6 text-gray-500" />
+              )}
+            </button>
             
-            <View className="flex-1">
-              <Text className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'}`}>
+            <div className="flex-1">
+              <h3 className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'}`}>
                 {task.title}
-              </Text>
-              {task.description ? (
-                <Text className="text-gray-600 dark:text-gray-400 mt-1">
+              </h3>
+              {task.description && (
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
                   {task.description}
-                </Text>
-              ) : null}
-              <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                </p>
+              )}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 Due: {task.dueDate.toLocaleDateString()}
-              </Text>
-            </View>
+              </p>
+            </div>
 
-            <TouchableOpacity
-              onPress={() => deleteTask(task.id)}
-              className="ml-2"
+            <button
+              onClick={() => deleteTask(task.id)}
+              className="ml-2 focus:outline-none"
             >
-              <Ionicons name="trash-outline" size={20} color="#EF4444" />
-            </TouchableOpacity>
-          </View>
+              <FiTrash2 className="w-5 h-5 text-red-500 hover:text-red-600" />
+            </button>
+          </div>
         ))}
-      </ScrollView>
-    </View>
+      </div>
+    </div>
   );
 } 
