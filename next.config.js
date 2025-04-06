@@ -9,7 +9,8 @@ const nextConfig = {
   trailingSlash: true,
   reactStrictMode: true,
   swcMinify: true,
-  distDir: 'out'
+  distDir: 'out',
+  assetPrefix: '/CalDo/',
 }
 
 module.exports = nextConfig 
